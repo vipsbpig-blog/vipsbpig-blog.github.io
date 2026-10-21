@@ -79,19 +79,6 @@ const dateStr = date.toLocaleDateString('zh-CN', {
           }
         </header>
 
-        {
-          hasToc && (
-            <details class="mb-8 border-l-2 border-[var(--color-accent)] pl-4 xl:hidden">
-              <summary class="font-serif text-sm text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
-                目录
-              </summary>
-              <div class="mt-3">
-                <TableOfContents headings={headings} />
-              </div>
-            </details>
-          )
-        }
-
         <Prose>
           <slot />
         </Prose>
@@ -126,8 +113,93 @@ const dateStr = date.toLocaleDateString('zh-CN', {
     }
   </div>
 
+  {
+    hasToc && (
+      <button
+        type="button"
+        id="toc-open"
+        aria-label="打开目录"
+        class="fixed top-20 right-4 z-40 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-line)] bg-[var(--color-paper)]/85 text-[var(--color-ink-mute)] opacity-80 shadow-[var(--shadow-soft)] backdrop-blur-md transition-opacity hover:opacity-100 hover:text-[var(--color-accent)] xl:hidden dark:border-[var(--color-line-dark)] dark:bg-[var(--color-paper-dark)]/85 dark:text-[var(--color-ink-mute-dark)]"
+      >
+        <svg
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+        >
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+    )
+  }
+
+  {
+    hasToc && (
+      <dialog
+        id="toc-drawer"
+        class="m-0 ml-auto h-[100dvh] w-72 max-w-[85vw] rounded-l-lg border-l border-[var(--color-line)] bg-[var(--color-paper)] p-0 backdrop:bg-black/40 dark:border-[var(--color-line-dark)] dark:bg-[var(--color-paper-dark)]"
+      >
+        <div class="flex h-full flex-col">
+          <div class="flex items-center justify-between border-b border-[var(--color-line)] px-5 py-4 dark:border-[var(--color-line-dark)]">
+            <span class="font-serif text-sm text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]">目录</span>
+            <button
+              type="button"
+              id="toc-close"
+              aria-label="关闭目录"
+              class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]"
+            >
+              <svg
+                class="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              >
+                <path d="M6 6l12 12M18 6L6 18"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="overflow-y-auto px-5 py-4">
+            <TableOfContents headings={headings} />
+            {
+              tags.length > 0 && (
+                <div class="mt-8 border-t border-[var(--color-line)] pt-6 dark:border-[var(--color-line-dark)]">
+                  <div class="mb-3 font-serif text-sm text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
+                    标签
+                  </div>
+                  <Tags tags={tags} />
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </dialog>
+    )
+  }
+
   <script is:inline>
-    // 滚动时高亮当前章节对应的 TOC 项（桌面飘浮栏 + 移动内联栏都生效）
+    // 移动端 TOC 抽屉
+    (function () {
+      const btn = document.getElementById('toc-open');
+      const dlg = document.getElementById('toc-drawer');
+      const closeBtn = document.getElementById('toc-close');
+      if (!btn || !dlg) return;
+      btn.addEventListener('click', () => dlg.showModal());
+      closeBtn?.addEventListener('click', () => dlg.close());
+      dlg.querySelectorAll('a.toc-link').forEach((a) => {
+        a.addEventListener('click', () => dlg.close());
+      });
+      dlg.addEventListener('click', (e) => {
+        if (e.target === dlg) dlg.close();
+      });
+    })();
+  </script>
+
+  <script is:inline>
+    // 滚动时高亮当前章节对应的 TOC 项（桌面飘浮栏 + 移动抽屉都生效）
     // is:inline：随 HTML 同步执行，文章一出现 TOC 高亮即就位，无 deferred module 延迟
     const headingEls = Array.from(
       document.querySelectorAll('article h2[id], article h3[id]')
@@ -184,5 +256,43 @@ const dateStr = date.toLocaleDateString('zh-CN', {
       headingEls.forEach((h) => observer.observe(h));
       setActive();
     }
+  </script>
+
+  <button
+    type="button"
+    id="back-to-top"
+    aria-label="回到顶部"
+    class="fixed bottom-6 right-4 z-40 lg:right-auto lg:left-[calc(50%_+_340px_+_1rem)] inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-line)] bg-[var(--color-paper)]/85 text-[var(--color-ink-mute)] opacity-0 shadow-[var(--shadow-soft)] backdrop-blur-md transition-opacity duration-200 hover:text-[var(--color-accent)] dark:border-[var(--color-line-dark)] dark:bg-[var(--color-paper-dark)]/85 dark:text-[var(--color-ink-mute-dark)]"
+    style="pointer-events: none;"
+  >
+    <svg
+      class="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M12 19V5M5 12l7-7 7 7"></path>
+    </svg>
+  </button>
+
+  <script is:inline>
+    // 回到顶部：离开顶部时显示，点击平滑滚回
+    (function () {
+      const btn = document.getElementById('back-to-top');
+      if (!btn) return;
+      const onScroll = () => {
+        const show = window.scrollY > 300;
+        btn.style.opacity = show ? '1' : '0';
+        btn.style.pointerEvents = show ? 'auto' : 'none';
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
   </script>
 </BaseLayout>
