@@ -9,14 +9,16 @@ import {
   AUTHOR_BIO,
   AUTHOR_AVATAR,
   SOCIAL_LINKS,
+  EXCERPT_MAX_CHARS,
 } from '../consts';
 import { tagColor } from '../utils/tagColor';
+import { getExcerpt } from '../utils/excerpt';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).map(
-  (p) => ({ type: 'dev' as const, id: p.id, ...p.data })
+  (p) => ({ type: 'dev' as const, id: p.id, body: p.body, ...p.data })
 );
 const photos = (await getCollection('photos', ({ data }) => !data.draft)).map(
-  (p) => ({ type: 'photo' as const, id: p.id, ...p.data })
+  (p) => ({ type: 'photo' as const, id: p.id, body: p.body, ...p.data })
 );
 
 const feed = [...posts, ...photos].sort(
@@ -110,7 +112,7 @@ const hrefOf = (item: { type: 'dev' | 'photo'; id: string }) =>
               type={item.type}
               title={item.title}
               date={item.date}
-              summary={item.summary}
+              summary={item.summary ?? getExcerpt(item.body ?? '', EXCERPT_MAX_CHARS)}
               tags={item.tags}
               cover={item.cover}
               href={hrefOf(item)}

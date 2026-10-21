@@ -42,6 +42,9 @@ export const FEATURED = [
   { type: 'photo' as const, slug: 'weekend-coffee' },
 ] as const;
 
+// 文章卡片摘要：自动提取时的最大字符数（手填 summary 不受限）
+export const EXCERPT_MAX_CHARS = 90;
+
 export const SOCIAL_LINKS = {
   github: 'https://github.com/username',
   rss: '/rss.xml',

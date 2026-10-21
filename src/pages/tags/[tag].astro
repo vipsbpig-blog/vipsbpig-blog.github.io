@@ -2,14 +2,16 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import { EXCERPT_MAX_CHARS } from '../../consts';
+import { getExcerpt } from '../../utils/excerpt';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts', ({ data }) => !data.draft);
   const photos = await getCollection('photos', ({ data }) => !data.draft);
 
   const all = [
-    ...posts.map((p) => ({ type: 'dev' as const, id: p.id, ...p.data })),
-    ...photos.map((p) => ({ type: 'photo' as const, id: p.id, ...p.data })),
+    ...posts.map((p) => ({ type: 'dev' as const, id: p.id, body: p.body, ...p.data })),
+    ...photos.map((p) => ({ type: 'photo' as const, id: p.id, body: p.body, ...p.data })),
   ];
 
   const tagSet = new Set<string>();
@@ -49,7 +51,7 @@ const { tag, items } = Astro.props;
             type={item.type}
             title={item.title}
             date={item.date}
-            summary={item.summary}
+            summary={item.summary ?? getExcerpt(item.body ?? '', EXCERPT_MAX_CHARS)}
             tags={item.tags}
             cover={item.cover}
             href={item.type === 'dev' ? `/posts/${item.id}/` : `/life/${item.id}/`}
