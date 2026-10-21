@@ -32,19 +32,20 @@ for (const item of feed) {
 const tags = [...tagMap.entries()].sort(
   (a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh-Hans-CN')
 );
+const topTags = tags.slice(0, 8);
 
 const hrefOf = (item: { type: 'dev' | 'photo'; id: string }) =>
   item.type === 'dev' ? `/posts/${item.id}/` : `/life/${item.id}/`;
 ---
 
 <BaseLayout wide>
-  <div class="flex flex-col gap-12 md:flex-row md:gap-12">
-    <!-- 右侧：Hero + 标签 + 精选 -->
-    <aside class="md:order-2 md:w-72 md:shrink-0 md:self-start md:sticky md:top-20">
-      <div class="flex flex-col items-center text-center md:items-start md:text-left">
-        <div class="relative w-28 md:w-36">
+  <div class="flex flex-col gap-6 md:flex-row md:gap-12">
+    <!-- 移动端紧凑 Bio（桌面隐藏） -->
+    <section class="md:hidden">
+      <div class="flex items-start gap-3">
+        <div class="relative w-16 shrink-0">
           <div
-            class="absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-full"
+            class="absolute inset-0 translate-x-1 translate-y-1 rounded-full"
             style="background-color: color-mix(in srgb, var(--color-honey) 40%, transparent)"
           >
           </div>
@@ -54,45 +55,128 @@ const hrefOf = (item: { type: 'dev' | 'photo'; id: string }) =>
             class="relative aspect-square w-full rounded-full object-cover shadow-[var(--shadow-soft)]"
           />
         </div>
-        <h1
-          class="mt-4 font-serif text-xl font-semibold tracking-tight text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
+        <div class="min-w-0 flex-1">
+          <h1
+            class="font-serif text-base font-semibold tracking-tight text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
+          >
+            {AUTHOR}
+          </h1>
+          <div class="mt-1 h-0.5 w-8 rounded-full bg-[var(--color-coral)]"></div>
+          <p
+            class="mt-1.5 font-serif text-sm italic text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
+          >
+            {AUTHOR_TAGLINE}
+          </p>
+          <p
+            class="mt-2 text-sm leading-relaxed text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
+          >
+            {AUTHOR_BIO}
+          </p>
+          <div class="mt-2 flex flex-wrap gap-x-3 gap-y-0.5 text-sm">
+            <a
+              href={SOCIAL_LINKS.github}
+              target="_blank"
+              rel="noopener"
+              class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">GitHub</a
+            >
+            <a
+              href={SOCIAL_LINKS.rss}
+              class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">RSS</a
+            >
+            <a
+              href="/about"
+              class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">关于 →</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 左侧：Latest Post -->
+    <div class="md:order-1 md:min-w-0 md:flex-1">
+      <div class="mb-6 flex items-center gap-2.5">
+        <span class="h-2.5 w-2.5 rounded-sm bg-[var(--color-coral)]"></span>
+        <h2
+          class="font-serif text-sm font-medium text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
         >
-          {AUTHOR}
-        </h1>
-        <div class="mt-2 h-1 w-10 rounded-full bg-[var(--color-coral)]"></div>
-        <p
-          class="mt-3 font-serif text-sm italic text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
-        >
-          {AUTHOR_TAGLINE}
-        </p>
+          Latest Post
+        </h2>
       </div>
 
-      <p
-        class="mt-4 text-sm leading-relaxed text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
-      >
-        {AUTHOR_BIO}
-      </p>
+      <div>
+        {
+          feed.map((item) => (
+            <PostCard
+              type={item.type}
+              title={item.title}
+              date={item.date}
+              summary={item.summary}
+              tags={item.tags}
+              cover={item.cover}
+              href={hrefOf(item)}
+            />
+          ))
+        }
+      </div>
+    </div>
 
-      <div class="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-        <a
-          href={SOCIAL_LINKS.github}
-          target="_blank"
-          rel="noopener"
-          class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">GitHub</a
+    <!-- 右侧：Hero + 标签 + 精选 -->
+    <aside class="md:order-2 md:w-72 md:shrink-0 md:self-start md:sticky md:top-20">
+      <!-- 桌面端 Bio（移动端隐藏） -->
+      <div class="hidden md:block">
+        <div class="flex flex-col items-center text-center md:items-start md:text-left">
+          <div class="relative w-28 md:w-36">
+            <div
+              class="absolute inset-0 translate-x-1.5 translate-y-1.5 rounded-full"
+              style="background-color: color-mix(in srgb, var(--color-honey) 40%, transparent)"
+            >
+            </div>
+            <img
+              src={AUTHOR_AVATAR}
+              alt={AUTHOR}
+              class="relative aspect-square w-full rounded-full object-cover shadow-[var(--shadow-soft)]"
+            />
+          </div>
+          <h1
+            class="mt-4 font-serif text-xl font-semibold tracking-tight text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
+          >
+            {AUTHOR}
+          </h1>
+          <div class="mt-2 h-1 w-10 rounded-full bg-[var(--color-coral)]"></div>
+          <p
+            class="mt-3 font-serif text-sm italic text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
+          >
+            {AUTHOR_TAGLINE}
+          </p>
+        </div>
+
+        <p
+          class="mt-4 text-sm leading-relaxed text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
         >
-        <a
-          href={SOCIAL_LINKS.rss}
-          class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">RSS</a
-        >
-        <a
-          href="/about"
-          class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">关于 →</a
-        >
+          {AUTHOR_BIO}
+        </p>
+
+        <div class="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          <a
+            href={SOCIAL_LINKS.github}
+            target="_blank"
+            rel="noopener"
+            class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">GitHub</a
+          >
+          <a
+            href={SOCIAL_LINKS.rss}
+            class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">RSS</a
+          >
+          <a
+            href="/about"
+            class="text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">关于 →</a
+          >
+        </div>
       </div>
 
       <!-- 标签 widget -->
       <div
-        class="mt-8 border-t border-[var(--color-line)] pt-6 dark:border-[var(--color-line-dark)]"
+        class="md:mt-8 border-t border-[var(--color-line)] pt-6 dark:border-[var(--color-line-dark)]"
       >
         <div class="mb-4 flex items-center gap-2.5">
           <span class="h-2 w-2 rounded-sm bg-[var(--color-sage)]"></span>
@@ -103,9 +187,9 @@ const hrefOf = (item: { type: 'dev' | 'photo'; id: string }) =>
           </h2>
         </div>
         {
-          tags.length > 0 ? (
+          topTags.length > 0 ? (
             <div class="flex flex-wrap gap-1.5">
-              {tags.map(([tag, count]) => (
+              {topTags.map(([tag, count]) => (
                 <a
                   href={`/tags/${encodeURIComponent(tag)}/`}
                   class="tag-pill"
@@ -137,33 +221,5 @@ const hrefOf = (item: { type: 'dev' | 'photo'; id: string }) =>
       <!-- 精选 widget -->
       <FeaturedPosts />
     </aside>
-
-    <!-- 左侧：Latest Post -->
-    <div class="md:order-1 md:min-w-0 md:flex-1">
-      <div class="mb-6 flex items-center gap-2.5">
-        <span class="h-2.5 w-2.5 rounded-sm bg-[var(--color-coral)]"></span>
-        <h2
-          class="font-serif text-sm font-medium text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
-        >
-          Latest Post
-        </h2>
-      </div>
-
-      <div>
-        {
-          feed.map((item) => (
-            <PostCard
-              type={item.type}
-              title={item.title}
-              date={item.date}
-              summary={item.summary}
-              tags={item.tags}
-              cover={item.cover}
-              href={hrefOf(item)}
-            />
-          ))
-        }
-      </div>
-    </div>
   </div>
 </BaseLayout>
