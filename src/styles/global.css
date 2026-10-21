@@ -344,3 +344,25 @@
     background-color: color-mix(in srgb, var(--color-coral) 5%, transparent);
   }
 }
+
+/* 背景图非线性遮罩：图片居右 78%，左 5% 完全透明，前期渐入极慢，90% 后完全显示 */
+.bg-fade-img {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.05) 20%,
+    rgba(0, 0, 0, 0.15) 40%,
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0.5) 78%,
+    #000 95%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.05) 20%,
+    rgba(0, 0, 0, 0.15) 40%,
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0.5) 78%,
+    #000 95%
+  );
+}

@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import { FEATURED } from '../consts';
+
+const postsCol = await getCollection('posts', ({ data }) => !data.draft);
+const photosCol = await getCollection('photos', ({ data }) => !data.draft);
+
+type Item = {
+  type: 'dev' | 'photo';
+  title: string;
+  date: Date;
+  cover?: string;
+  href: string;
+};
+
+const featured: Item[] = [];
+for (const f of FEATURED) {
+  const col = f.type === 'dev' ? postsCol : photosCol;
+  const entry = col.find((e) => e.id === f.slug);
+  if (!entry) continue;
+  featured.push({
+    type: f.type,
+    title: entry.data.title,
+    date: entry.data.date,
+    cover: entry.data.cover,
+    href:
+      f.type === 'dev'
+        ? `/posts/${entry.id}/`
+        : `/life/${entry.id}/`,
+  });
+}
+
+const dateStr = (d: Date) =>
+  d.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' });
+---
+
+{
+  featured.length > 0 && (
+    <div class="mt-8 border-t border-[var(--color-line)] pt-6 dark:border-[var(--color-line-dark)]">
+      <div class="mb-4 flex items-center gap-2.5">
+        <span class="h-2 w-2 rounded-sm bg-[var(--color-honey)]" />
+        <h2 class="font-serif text-sm font-medium text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]">
+          精选
+        </h2>
+      </div>
+      <ul class="space-y-4">
+        {featured.map((item) => (
+          <li>
+            <a href={item.href} class="group flex items-center gap-3">
+              {item.cover && (
+                <div class="h-14 w-14 shrink-0 overflow-hidden rounded-md">
+                  <img
+                    src={item.cover}
+                    alt={item.title}
+                    loading="lazy"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.08]"
+                  />
+                </div>
+              )}
+              <div class="min-w-0">
+                <div class="truncate font-serif text-sm font-medium text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-accent)] dark:text-[var(--color-ink-dark)]">
+                  {item.title}
+                </div>
+                <div class="mt-0.5 text-xs text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
+                  {dateStr(item.date)}
+                </div>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}

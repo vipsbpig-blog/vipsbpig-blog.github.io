@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CATEGORIES } from '../../consts';
+
+const cat = CATEGORIES.find((c) => c.slug === 'life')!;
+const photos = (await getCollection('photos', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const dateStr = (d: Date) =>
+  d.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+---
+
+<BaseLayout wide title={cat.label} description={cat.description}>
+  <header class="mb-12">
+    <div class="mb-3 flex items-center gap-2.5">
+      <span class="h-2.5 w-2.5 rounded-sm" style={`background:${cat.color}`}></span>
+      <h1 class="font-serif text-3xl font-semibold tracking-tight text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]">
+        {cat.label}
+      </h1>
+    </div>
+    <p class="max-w-prose leading-relaxed text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]">
+      {cat.description}
+    </p>
+  </header>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      photos.map((p) => (
+        <a href={`/life/${p.id}/`} class="group block">
+          <div class="mb-3 overflow-hidden rounded-lg shadow-[var(--shadow-soft)]">
+            <img
+              src={p.data.cover}
+              alt={p.data.title}
+              loading="lazy"
+              class="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            />
+          </div>
+          <div class="mb-1 flex items-center gap-2 text-xs text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
+            <span class="type-pill" style="--pill:var(--color-coral)">生活</span>
+            <time datetime={p.data.date.toISOString()}>{dateStr(p.data.date)}</time>
+          </div>
+          <h3 class="font-serif text-lg font-medium leading-snug tracking-tight text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-accent)] dark:text-[var(--color-ink-dark)]">
+            {p.data.title}
+          </h3>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

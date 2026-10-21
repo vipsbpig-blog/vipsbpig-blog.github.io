@@ -28,47 +28,60 @@ const dateStr = date.toLocaleDateString('zh-CN', {
   month: 'long',
   day: 'numeric',
 });
-const typeLabel = type === 'dev' ? '开发' : '图文';
-const pillColor =
-  type === 'dev' ? 'var(--color-sage)' : 'var(--color-coral)';
+const typeLabel = type === 'dev' ? '开发' : '生活';
+const pillColor = type === 'dev' ? 'var(--color-sage)' : 'var(--color-coral)';
+const hasCover = !!cover;
 ---
 
-<article class="card-hover group relative mb-8 break-inside-avoid px-3 py-2 -mx-3 rounded-lg">
+<article
+  class:list={[
+    'card-hover group relative mb-8 isolate flex flex-col overflow-hidden rounded-lg bg-[var(--color-paper)] dark:bg-[var(--color-paper-dark)]',
+    hasCover && 'min-h-[220px]',
+  ]}
+>
   {
-    cover && (
-      <div class="mb-4 overflow-hidden rounded-lg shadow-[var(--shadow-soft)]">
+    hasCover && (
+      <>
         <img
           src={cover}
           alt={title}
           loading="lazy"
-          class="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          class="bg-fade-img absolute inset-y-0 right-0 w-[78%] object-cover transition-transform duration-500 group-hover:scale-[1.03]"
         />
-      </div>
+        {/* 底部辅助遮罩：保护标签栏与阅读全文（用卡片背景色，融入卡片） */}
+        <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-paper)]/70 via-transparent to-transparent dark:from-[var(--color-paper-dark)]/70" />
+      </>
     )
   }
 
-  <div class="mb-2 flex items-center gap-2 text-xs text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
-    <span class="type-pill" style={`--pill:${pillColor}`}>{typeLabel}</span>
-    <time datetime={date.toISOString()}>{dateStr}</time>
-  </div>
+  <div class="relative z-10 flex flex-1 flex-col p-5 sm:p-6 sm:pr-[22%]">
+    <div class="mb-2 flex items-center gap-2 text-xs text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
+      <span class="type-pill" style={`--pill:${pillColor}`}>{typeLabel}</span>
+      <time datetime={date.toISOString()}>{dateStr}</time>
+    </div>
 
-  <h3 class="font-serif text-xl font-medium leading-snug tracking-tight text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-accent)] dark:text-[var(--color-ink-dark)]">
-    <a href={href} class="after:absolute after:inset-0 after:content-['']">{title}</a>
-  </h3>
+    <h3 class="font-serif text-xl font-medium leading-snug tracking-tight text-[var(--color-ink)] transition-colors group-hover:text-[var(--color-accent)] dark:text-[var(--color-ink-dark)]">
+      {title}
+    </h3>
 
-  {
-    showSummary && summary && (
-      <p class="mt-2 text-sm leading-relaxed text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]">
-        {summary}
-      </p>
-    )
-  }
+    {
+      showSummary && summary && (
+        <p class="mt-2 text-sm leading-relaxed text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]">
+          {summary}
+        </p>
+      )
+    }
 
-  {
-    tags.length > 0 && (
-      <div class="relative z-10 mt-3">
+    <div class="mt-auto flex items-center justify-between gap-3 pt-3">
+      <div class="relative z-30">
         <Tags tags={tags} />
       </div>
-    )
-  }
+      <span class="shrink-0 text-xs text-[var(--color-accent)] transition-transform duration-200 group-hover:translate-x-0.5">
+        阅读全文 →
+      </span>
+    </div>
+  </div>
+
+  {/* 整卡可点击的隐形链接：覆盖全卡，标签 z-30 在其上可独立点 */}
+  <a href={href} class="absolute inset-0 z-20" aria-label={`阅读：${title}`}></a>
 </article>

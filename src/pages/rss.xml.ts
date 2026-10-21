@@ -22,7 +22,7 @@ export async function GET(context: APIContext) {
       link:
         item.collection === 'posts'
           ? `/posts/${item.id}/`
-          : `/photos/${item.id}/`,
+          : `/life/${item.id}/`,
     })),
   });
 }

@@ -42,7 +42,7 @@ const { tag, items } = Astro.props;
       </span>
     </div>
 
-    <div class="columns-1 gap-8 md:columns-2">
+    <div>
       {
         items.map((item) => (
           <PostCard
@@ -52,7 +52,7 @@ const { tag, items } = Astro.props;
             summary={item.summary}
             tags={item.tags}
             cover={item.cover}
-            href={item.type === 'dev' ? `/posts/${item.id}/` : `/photos/${item.id}/`}
+            href={item.type === 'dev' ? `/posts/${item.id}/` : `/life/${item.id}/`}
           />
         ))
       }
