@@ -396,3 +396,21 @@
     #000 95%
   );
 }
+
+/* 窄屏（<640px）：文本无右内边距会顶满压在图上，左 30% 渐入到 20%，其后持平 20% */
+@media (max-width: 639px) {
+  .bg-fade-img {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
+  }
+}
