@@ -34,18 +34,27 @@ const hrefOf = (item: { type: 'dev' | 'photo'; id: string }) =>
       <div
         class="flex flex-col items-center text-center md:items-start md:text-left"
       >
-        <img
-          src={AUTHOR_AVATAR}
-          alt={AUTHOR}
-          class="aspect-[4/5] w-28 rounded-lg object-cover shadow-[var(--shadow-soft)]"
-        />
+        <div class="relative w-28 md:w-44">
+          <div
+            class="absolute inset-0 translate-x-2 translate-y-2 rounded-lg"
+            style="background-color: color-mix(in srgb, var(--color-honey) 45%, transparent)"
+          >
+          </div>
+          <img
+            src={AUTHOR_AVATAR}
+            alt={AUTHOR}
+            class="relative aspect-[4/5] w-full rounded-lg object-cover shadow-[var(--shadow-soft)]"
+          />
+        </div>
         <h1
           class="mt-4 font-serif text-xl font-semibold tracking-tight text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
         >
           {AUTHOR}
         </h1>
+        <div class="mt-2 h-1 w-10 rounded-full bg-[var(--color-coral)]">
+        </div>
         <p
-          class="mt-1 font-serif text-sm italic text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
+          class="mt-3 font-serif text-sm italic text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]"
         >
           {AUTHOR_TAGLINE}
         </p>
@@ -77,16 +86,13 @@ const hrefOf = (item: { type: 'dev' | 'photo'; id: string }) =>
 
     <!-- 左侧：时间线（大边幅） -->
     <div class="md:order-1 md:min-w-0 md:flex-1">
-      <div class="mb-6 flex items-center gap-4">
+      <div class="mb-6 flex items-center gap-2.5">
+        <span class="h-2.5 w-2.5 rounded-sm bg-[var(--color-coral)]"></span>
         <h2
-          class="font-serif text-sm text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]"
+          class="font-serif text-sm font-medium text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
         >
           时间线
         </h2>
-        <div
-          class="h-px flex-1 bg-[var(--color-line)] dark:bg-[var(--color-line-dark)]"
-        >
-        </div>
       </div>
 
       <div>

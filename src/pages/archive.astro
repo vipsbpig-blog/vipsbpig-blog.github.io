@@ -26,12 +26,16 @@ const years = Object.keys(byYear)
 
 <BaseLayout title="归档">
   <section>
-    <h1 class="font-serif text-3xl font-semibold tracking-tight mb-12">归档</h1>
+    <div class="mb-12 flex items-center gap-2.5">
+      <span class="h-2.5 w-2.5 rounded-sm bg-[var(--color-coral)]"></span>
+      <h1 class="font-serif text-3xl font-semibold tracking-tight">归档</h1>
+    </div>
 
     {
       years.map((year) => (
         <div class="mb-12">
-          <h2 class="font-serif text-xl text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)] mb-4">
+          <h2 class="mb-4 flex items-center gap-2.5 font-serif text-xl font-medium text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]">
+            <span class="h-2.5 w-2.5 rounded-sm bg-[var(--color-coral)]" />
             {year}
           </h2>
           <ul class="border-t border-[var(--color-line)] dark:border-[var(--color-line-dark)]">
@@ -42,6 +46,10 @@ const years = Object.keys(byYear)
               });
               const href =
                 item.type === 'dev' ? `/posts/${item.id}/` : `/photos/${item.id}/`;
+              const typeColor =
+                item.type === 'dev'
+                  ? 'var(--color-sage)'
+                  : 'var(--color-coral)';
               return (
                 <li class="border-b border-[var(--color-line)] dark:border-[var(--color-line-dark)]">
                   <a
@@ -51,10 +59,13 @@ const years = Object.keys(byYear)
                     <span class="text-xs text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)] tabular-nums w-12 shrink-0">
                       {dateStr}
                     </span>
-                    <span class="text-xs text-[var(--color-accent)] w-10 shrink-0">
+                    <span
+                      class="w-10 shrink-0 text-xs font-medium"
+                      style={`color:${typeColor}`}
+                    >
                       {item.type === 'dev' ? '开发' : '图文'}
                     </span>
-                    <span class="font-serif text-base group-hover:text-[var(--color-accent)] transition-colors">
+                    <span class="font-serif text-base transition-colors group-hover:text-[var(--color-accent)]">
                       {item.title}
                     </span>
                   </a>

@@ -29,9 +29,11 @@ const dateStr = date.toLocaleDateString('zh-CN', {
   day: 'numeric',
 });
 const typeLabel = type === 'dev' ? '开发' : '图文';
+const pillColor =
+  type === 'dev' ? 'var(--color-sage)' : 'var(--color-coral)';
 ---
 
-<article class="group relative mb-8 break-inside-avoid">
+<article class="card-hover group relative mb-8 break-inside-avoid px-3 py-2 -mx-3 rounded-lg">
   {
     cover && (
       <div class="mb-4 overflow-hidden rounded-lg shadow-[var(--shadow-soft)]">
@@ -45,9 +47,8 @@ const typeLabel = type === 'dev' ? '开发' : '图文';
     )
   }
 
-  <div class="mb-2 flex items-center gap-3 text-xs text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
-    <span class="text-[var(--color-accent)]">{typeLabel}</span>
-    <span class="opacity-40">·</span>
+  <div class="mb-2 flex items-center gap-2 text-xs text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
+    <span class="type-pill" style={`--pill:${pillColor}`}>{typeLabel}</span>
     <time datetime={date.toISOString()}>{dateStr}</time>
   </div>
 

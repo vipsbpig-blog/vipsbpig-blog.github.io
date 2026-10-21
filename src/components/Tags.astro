@@ -1,4 +1,6 @@
 ---
+import { tagColor } from '../utils/tagColor';
+
 interface Props {
   tags?: string[];
 }
@@ -7,11 +9,12 @@ const { tags = [] } = Astro.props;
 
 {
   tags.length > 0 && (
-    <div class="flex flex-wrap gap-x-3 gap-y-1">
+    <div class="flex flex-wrap gap-1.5">
       {tags.map((tag) => (
         <a
           href={`/tags/${encodeURIComponent(tag)}/`}
-          class="text-xs text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]"
+          class="tag-pill"
+          style={`--tag-text:${tagColor(tag)}`}
         >
           #{tag}
         </a>

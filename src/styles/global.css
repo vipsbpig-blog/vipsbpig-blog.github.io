@@ -12,8 +12,18 @@
   --color-ink-soft: #4a4a4a;
   --color-ink-mute: #8a8a85;
   --color-line: #e6e2da;
-  --color-accent: #c08b8b;
-  --color-accent-soft: #d9aeae;
+  --color-accent: #e07856;
+  --color-accent-soft: #f4c5b3;
+  --color-coral: #e07856;
+  --color-coral-soft: #f4c5b3;
+  --color-sage: #6ba292;
+  --color-sage-soft: #cbe0d6;
+  --color-honey: #e0a96d;
+  --color-honey-soft: #f2dfc4;
+  --color-plum: #9d6b8b;
+  --color-plum-soft: #ecdde6;
+  --color-slate: #6b8a9e;
+  --color-slate-soft: #d9e3ea;
 
   /* 暗色对应 */
   --color-paper-dark: #1c1b19;
@@ -22,7 +32,12 @@
   --color-ink-soft-dark: #b5b2ab;
   --color-ink-mute-dark: #7a7770;
   --color-line-dark: #34322d;
-  --color-accent-dark: #c08b8b;
+  --color-accent-dark: #ea8a6a;
+  --color-coral-dark: #ea8a6a;
+  --color-sage-dark: #7eb6a4;
+  --color-honey-dark: #ebbe85;
+  --color-plum-dark: #b485a3;
+  --color-slate-dark: #84a3b5;
 
   /* 字体栈：拉丁用 webfont，中文走系统栈避免大文件 */
   --font-serif:
@@ -288,5 +303,44 @@
   }
   .code-copy.copied {
     color: var(--color-accent);
+  }
+}
+
+/* ============ 彩色药丸：类型标签 + 标签 + 卡片 hover ============ */
+@layer components {
+  .type-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.12rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--pill);
+    background: color-mix(in srgb, var(--pill) 15%, transparent);
+  }
+
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1rem 0.55rem;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    color: var(--tag-text);
+    background: color-mix(in srgb, var(--tag-text) 14%, transparent);
+    transition: background 0.2s ease;
+  }
+  .tag-pill:hover {
+    background: color-mix(in srgb, var(--tag-text) 24%, transparent);
+  }
+
+  /* 卡片 hover：浮一层极淡珊瑚暖底 */
+  .card-hover {
+    transition: background-color 0.3s ease;
+    border-radius: 0.5rem;
+  }
+  .card-hover:hover {
+    background-color: color-mix(in srgb, var(--color-coral) 5%, transparent);
   }
 }

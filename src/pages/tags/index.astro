@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { tagColor } from '../../utils/tagColor';
 
 const posts = await getCollection('posts', ({ data }) => !data.draft);
 const photos = await getCollection('photos', ({ data }) => !data.draft);
@@ -20,9 +21,10 @@ const tags = [...tagMap.entries()].sort(
 
 <BaseLayout title="标签">
   <section>
-    <h1 class="mb-12 font-serif text-3xl font-semibold tracking-tight">
-      标签
-    </h1>
+    <div class="mb-12 flex items-center gap-2.5">
+      <span class="h-2.5 w-2.5 rounded-sm bg-[var(--color-coral)]"></span>
+      <h1 class="font-serif text-3xl font-semibold tracking-tight">标签</h1>
+    </div>
 
     {
       tags.length === 0 ? (
@@ -30,16 +32,15 @@ const tags = [...tagMap.entries()].sort(
           还没有标签。
         </p>
       ) : (
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-2.5">
           {tags.map(([tag, count]) => (
             <a
               href={`/tags/${encodeURIComponent(tag)}/`}
-              class="group inline-flex items-center gap-1.5 rounded-full border border-[var(--color-line)] px-4 py-2 text-sm transition-colors hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] dark:border-[var(--color-line-dark)]"
+              class="tag-pill px-3.5 py-1.5 text-sm"
+              style={`--tag-text:${tagColor(tag)}`}
             >
-              <span>#{tag}</span>
-              <span class="text-xs text-[var(--color-ink-mute)] transition-colors group-hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]">
-                {count}
-              </span>
+              #{tag}
+              <span class="ml-1.5 text-xs opacity-60">{count}</span>
             </a>
           ))}
         </div>
