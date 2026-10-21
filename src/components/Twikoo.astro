@@ -1,0 +1,26 @@
+---
+import { TWIKOO_ENV_ID } from '../consts';
+const enabled = TWIKOO_ENV_ID !== 'placeholder';
+---
+
+{
+  enabled && (
+    <section class="mt-20 border-t border-[var(--color-line)] pt-12 dark:border-[var(--color-line-dark)]">
+      <h2 class="font-serif mb-8 text-lg font-medium text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]">
+        评论
+      </h2>
+      <div id="tcomment" />
+      <script is:inline src="https://cdn.staticfile.org/twikoo/1.6.39/twikoo.all.min.js" />
+      <script is:inline define:vars={{ envId: TWIKOO_ENV_ID }}>
+        const initTwikoo = () => {
+          if (window.twikoo) {
+            twikoo.init({ envId, el: '#tcomment' });
+          } else {
+            setTimeout(initTwikoo, 200);
+          }
+        };
+        initTwikoo();
+      </script>
+    </section>
+  )
+}

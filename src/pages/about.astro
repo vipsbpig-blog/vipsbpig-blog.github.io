@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { AUTHOR } from '../consts';
+---
+
+<BaseLayout title="关于" description={`关于 ${AUTHOR}`}>
+  <article class="prose">
+    <h1>关于</h1>
+
+    <p>
+      你好，我是 <strong>{AUTHOR}</strong>。
+    </p>
+
+    <p>
+      这是一个私人博客，记录两件事：我写的代码，和我过的日子。
+    </p>
+
+    <p>
+      开发记录那部分，是技术笔记、踩坑复盘、项目碎片——写给未来的自己看。
+      日常图文那部分，是照片和短文——留给愿意读的人。
+    </p>
+
+    <p>
+      博客用 <a href="https://astro.build" target="_blank" rel="noopener">Astro</a>
+      搭建，托管在 GitHub Pages，评论用 Twikoo。没有追踪器，没有广告，没有花里胡哨的弹窗。
+    </p>
+
+    <p>
+      如果你想联系我，可以去 GitHub 找我，或者在任意一篇博文下留言。
+    </p>
+
+    <hr />
+
+    <p>
+      <em>愿你在这里读到一些值得停留的字。</em>
+    </p>
+  </article>
+</BaseLayout>

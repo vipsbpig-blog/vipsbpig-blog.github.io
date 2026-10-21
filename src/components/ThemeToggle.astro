@@ -1,0 +1,46 @@
+---
+// 暗色切换：localStorage 持久化，与 BaseLayout 的首屏脚本配合
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="切换主题"
+  class="flex h-8 w-8 items-center justify-center rounded-full text-[var(--color-ink-mute)] transition-colors hover:text-[var(--color-accent)] dark:text-[var(--color-ink-mute-dark)]"
+>
+  <!-- 太阳：暗色模式下显示 -->
+  <svg
+    class="hidden h-4 w-4 dark:block"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.6"
+    stroke="currentColor"
+  >
+    <circle cx="12" cy="12" r="4" />
+    <path
+      stroke-linecap="round"
+      d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"
+    />
+  </svg>
+  <!-- 月亮：亮色模式下显示 -->
+  <svg
+    class="block h-4 w-4 dark:hidden"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke-width="1.6"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"
+    />
+  </svg>
+</button>
+
+<script is:inline>
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  });
+</script>

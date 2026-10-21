@@ -1,0 +1,111 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import Prose from '../components/Prose.astro';
+import Twikoo from '../components/Twikoo.astro';
+import Tags from '../components/Tags.astro';
+
+interface Props {
+  post: CollectionEntry<'photos'>;
+}
+
+const { post } = Astro.props;
+const { title, date, tags, summary, cover, photos } = post.data;
+
+const dateStr = date.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={summary} image={cover}>
+  <article>
+    <header class="mb-10">
+      <img
+        src={cover}
+        alt={title}
+        class="aspect-[16/10] w-full rounded-lg object-cover shadow-[var(--shadow-soft)]"
+      />
+      <h1 class="mt-8 font-serif text-4xl font-semibold leading-[1.15] tracking-tight text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]">
+        {title}
+      </h1>
+      <div class="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
+        <time datetime={date.toISOString()}>{dateStr}</time>
+        {
+          tags.length > 0 && (
+            <>
+              <span class="opacity-40">·</span>
+              <Tags tags={tags} />
+            </>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      summary && (
+        <p class="mb-8 font-serif text-xl italic leading-relaxed text-[var(--color-ink-soft)] dark:text-[var(--color-ink-soft-dark)]">
+          {summary}
+        </p>
+      )
+    }
+
+    <Prose>
+      <slot />
+    </Prose>
+
+    {
+      photos.length > 0 && (
+        <section class="mt-12">
+          <div class="grid grid-cols-2 gap-3 md:grid-cols-3">
+            {photos.map((src) => (
+              <button
+                type="button"
+                class="gallery-item group block overflow-hidden rounded-md shadow-[var(--shadow-soft)]"
+                data-full={src}
+                aria-label="查看大图"
+              >
+                <img
+                  src={src}
+                  alt={title}
+                  loading="lazy"
+                  class="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                />
+              </button>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <Twikoo />
+  </article>
+
+  <dialog
+    id="lightbox"
+    class="backdrop:bg-black/80 m-auto max-h-[92vh] max-w-[94vw] rounded-lg p-0 backdrop-blur-md"
+  >
+    <img id="lightbox-img" class="block max-h-[92vh] max-w-[94vw] rounded-lg" alt="" />
+  </dialog>
+
+  <script is:inline>
+    const dialog = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    document.querySelectorAll('.gallery-item')?.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const full = btn.getAttribute('data-full');
+        if (full && lightboxImg && dialog) {
+          lightboxImg.src = full;
+          dialog.showModal();
+        }
+      });
+    });
+    dialog?.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dialog?.open) dialog.close();
+    });
+  </script>
+</BaseLayout>

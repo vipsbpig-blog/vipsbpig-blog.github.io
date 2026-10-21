@@ -1,0 +1,48 @@
+---
+// 正文排版容器：套用 global.css 中的 .prose 样式
+---
+
+<div class="prose">
+  <slot />
+</div>
+
+<script>
+  document.querySelectorAll('.prose pre').forEach((pre) => {
+    if (pre.querySelector('.code-copy')) return;
+
+    const lang = pre.getAttribute('data-language') || '';
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'code-toolbar';
+
+    if (lang) {
+      const label = document.createElement('span');
+      label.className = 'code-lang';
+      label.textContent = lang;
+      toolbar.appendChild(label);
+    }
+
+    const btn = document.createElement('button');
+    btn.className = 'code-copy';
+    btn.type = 'button';
+    btn.textContent = '复制';
+    btn.addEventListener('click', async () => {
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : '';
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+      } catch {
+        btn.textContent = '复制失败';
+      }
+      setTimeout(() => {
+        btn.textContent = '复制';
+        btn.classList.remove('copied');
+      }, 1800);
+    });
+    toolbar.appendChild(btn);
+
+    pre.appendChild(toolbar);
+  });
+</script>

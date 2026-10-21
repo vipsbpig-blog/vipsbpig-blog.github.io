@@ -1,0 +1,292 @@
+@import 'tailwindcss';
+
+/* 暗色模式基于 <html> 上的 .dark 类切换 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ============ 设计 Token ============ */
+@theme {
+  /* 配色：暖白底 + 墨色字 + 单一灰玫瑰点缀 */
+  --color-paper: #faf9f7;
+  --color-paper-soft: #f3f1ec;
+  --color-ink: #1a1a1a;
+  --color-ink-soft: #4a4a4a;
+  --color-ink-mute: #8a8a85;
+  --color-line: #e6e2da;
+  --color-accent: #c08b8b;
+  --color-accent-soft: #d9aeae;
+
+  /* 暗色对应 */
+  --color-paper-dark: #1c1b19;
+  --color-paper-soft-dark: #252320;
+  --color-ink-dark: #e8e6e1;
+  --color-ink-soft-dark: #b5b2ab;
+  --color-ink-mute-dark: #7a7770;
+  --color-line-dark: #34322d;
+  --color-accent-dark: #c08b8b;
+
+  /* 字体栈：拉丁用 webfont，中文走系统栈避免大文件 */
+  --font-serif:
+    'Fraunces', 'Songti SC', 'Noto Serif SC', 'Source Han Serif SC', serif;
+  --font-sans:
+    'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+
+  /* 阅读宽度 */
+  --reading-width: 680px;
+
+  /* 软阴影 */
+  --shadow-soft: 0 4px 24px -8px rgba(26, 26, 26, 0.08);
+}
+
+/* ============ 基础重置 ============ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'kern', 'liga', 'calt';
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: var(--color-paper-dark);
+    color: var(--color-ink-dark);
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+
+  .dark ::selection {
+    background-color: var(--color-accent-dark);
+    color: var(--color-paper-dark);
+  }
+}
+
+/* ============ 排版基线 ============ */
+@layer components {
+  .prose {
+    max-width: var(--reading-width);
+    margin-inline: auto;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+  }
+
+  .dark .prose {
+    color: var(--color-ink-soft-dark);
+  }
+
+  .prose h1,
+  .prose h2,
+  .prose h3 {
+    font-family: var(--font-serif);
+    color: var(--color-ink);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .dark .prose h1,
+  .dark .prose h2,
+  .dark .prose h3 {
+    color: var(--color-ink-dark);
+  }
+
+  .prose h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    margin-block: 2rem 1.5rem;
+  }
+
+  .prose h2 {
+    font-size: 1.625rem;
+    line-height: 1.3;
+    margin-block: 2.5rem 1rem;
+  }
+
+  .prose h3 {
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin-block: 1.75rem 0.75rem;
+  }
+
+  .prose p {
+    margin-block: 1.25rem;
+  }
+
+  .prose a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-accent-soft);
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  .prose a:hover {
+    text-decoration-color: var(--color-accent);
+  }
+
+  .prose blockquote {
+    margin-block: 1.5rem;
+    padding-inline-start: 1.25rem;
+    border-inline-start: 2px solid var(--color-accent);
+    color: var(--color-ink-mute);
+    font-style: italic;
+  }
+
+  .prose code {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 0.9em;
+    background-color: var(--color-paper-soft);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+  }
+
+  .dark .prose code {
+    background-color: var(--color-paper-soft-dark);
+  }
+
+  .prose pre {
+    margin-block: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .prose pre code {
+    background: none;
+    padding: 0;
+  }
+
+  .prose img {
+    width: 100%;
+    border-radius: 6px;
+    box-shadow: var(--shadow-soft);
+    margin-block: 1.75rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    margin-block: 1.25rem;
+    padding-inline-start: 1.5rem;
+  }
+
+  .prose li {
+    margin-block: 0.5rem;
+  }
+
+  .prose hr {
+    border: none;
+    border-top: 1px solid var(--color-line);
+    margin-block: 2.5rem;
+  }
+
+  .dark .prose hr {
+    border-top-color: var(--color-line-dark);
+  }
+}
+
+/* ============ 目录 (TOC) ============ */
+@layer base {
+  summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* 点击 TOC 链接时，标题不被 sticky header 遮挡 */
+  .prose h2,
+  .prose h3 {
+    scroll-margin-top: 5rem;
+  }
+}
+
+@layer components {
+  .toc-link.toc-active {
+    border-left-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  details[open] .toc-chevron {
+    transform: rotate(90deg);
+  }
+}
+
+/* ============ 代码块：复制按钮 + 语言标签 + 暗色适配 ============ */
+@layer components {
+  .prose pre {
+    position: relative;
+  }
+
+  /* Shiki 双主题：跟随站点 .dark 类切换（覆盖默认的 prefers-color-scheme） */
+  .dark .astro-code {
+    background-color: var(--shiki-dark-bg) !important;
+    color: var(--shiki-dark) !important;
+  }
+  .dark .astro-code span {
+    color: var(--shiki-dark) !important;
+  }
+
+  .code-toolbar {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 1;
+    font-family: var(--font-sans);
+  }
+
+  .code-lang {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #8a8a85;
+    user-select: none;
+  }
+  .dark .astro-code .code-lang {
+    color: #9da2a6;
+  }
+
+  .code-copy {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    color: #8a8a85;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+  .code-copy:hover {
+    color: var(--color-accent);
+    background: rgba(0, 0, 0, 0.04);
+  }
+  .dark .astro-code .code-copy {
+    color: #9da2a6;
+  }
+  .dark .astro-code .code-copy:hover {
+    color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .code-copy.copied {
+    color: var(--color-accent);
+  }
+}
