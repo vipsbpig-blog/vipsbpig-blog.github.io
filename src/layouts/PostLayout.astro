@@ -25,28 +25,12 @@ const dateStr = date.toLocaleDateString('zh-CN', {
 });
 ---
 
-<BaseLayout wide title={title} description={summary} image={cover}>
-  <div class="md:flex md:items-start md:gap-12">
-    {
-      hasToc && (
-        <aside class="hidden md:block md:w-56 md:shrink-0 md:sticky md:top-20 md:self-start">
-          <details id="toc-details" class="group">
-            <summary class="flex items-center gap-2 font-serif text-sm text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
-              <span class="toc-chevron inline-block transition-transform duration-200">
-                ▸
-              </span>
-              目录
-            </summary>
-            <div class="mt-4">
-              <TableOfContents headings={headings} />
-            </div>
-          </details>
-        </aside>
-      )
-    }
+<BaseLayout wider title={title} description={summary} image={cover}>
+  <div class="xl:grid xl:grid-cols-[1fr_minmax(0,680px)_1fr] xl:gap-8">
+    <div class="hidden xl:block"></div>
 
-    <article class="md:flex-1 md:min-w-0">
-      <div class="max-w-[680px]">
+    <article class="xl:min-w-0">
+      <div class="mx-auto max-w-[680px]">
         <header class="mb-12">
           <h1
             class="font-serif text-4xl font-semibold leading-[1.15] tracking-tight text-[var(--color-ink)] dark:text-[var(--color-ink-dark)]"
@@ -97,7 +81,7 @@ const dateStr = date.toLocaleDateString('zh-CN', {
 
         {
           hasToc && (
-            <details class="mb-8 border-l-2 border-[var(--color-accent)] pl-4 md:hidden">
+            <details class="mb-8 border-l-2 border-[var(--color-accent)] pl-4 xl:hidden">
               <summary class="font-serif text-sm text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
                 目录
               </summary>
@@ -115,43 +99,90 @@ const dateStr = date.toLocaleDateString('zh-CN', {
         <Twikoo />
       </div>
     </article>
+
+    {
+      hasToc && (
+        <aside class="hidden xl:block xl:sticky xl:top-20 xl:self-start xl:justify-self-start xl:w-56">
+          <details id="toc-details" class="group" open>
+            <summary class="flex items-center gap-2 font-serif text-sm text-[var(--color-ink-mute)] dark:text-[var(--color-ink-mute-dark)]">
+              <span class="toc-chevron inline-block transition-transform duration-200">
+                ▸
+              </span>
+              目录
+            </summary>
+            <div class="mt-4">
+              <TableOfContents headings={headings} />
+            </div>
+          </details>
+          {
+            tags.length > 0 && (
+              <div class="mt-8">
+                <Tags tags={tags} />
+              </div>
+            )
+          }
+        </aside>
+      )
+    }
   </div>
 
-  <script>
-    const details = document.getElementById('toc-details');
-    // 桌面端默认展开目录
-    if (details && window.matchMedia('(min-width: 768px)').matches) {
-      details.open = true;
-    }
-    // 滚动时高亮当前章节
-    const headingEls = document.querySelectorAll(
-      'article h2[id], article h3[id]'
+  <script is:inline>
+    // 滚动时高亮当前章节对应的 TOC 项（桌面飘浮栏 + 移动内联栏都生效）
+    // is:inline：随 HTML 同步执行，文章一出现 TOC 高亮即就位，无 deferred module 延迟
+    const headingEls = Array.from(
+      document.querySelectorAll('article h2[id], article h3[id]')
     );
-    const links = document.querySelectorAll('#toc-details a.toc-link');
-    if (headingEls.length && links.length) {
-      const map = new Map<string, Element>();
-      links.forEach((l) => {
-        const href = l.getAttribute('href');
-        if (href) map.set(href, l);
-      });
-      let active: Element | null = null;
+    const linksByHref = new Map();
+    document.querySelectorAll('a.toc-link[href]').forEach((l) => {
+      const href = l.getAttribute('href');
+      if (!href) return;
+      const arr = linksByHref.get(href);
+      if (arr) arr.push(l);
+      else linksByHref.set(href, [l]);
+    });
+
+    if (headingEls.length && linksByHref.size) {
+      const visible = new Set();
+      const HEADER_OFFSET = 80;
+
+      const setActive = () => {
+        // 优先：阅读带内最上方的标题
+        let current = null;
+        let topY = Infinity;
+        visible.forEach((h) => {
+          const y = h.getBoundingClientRect().top;
+          if (y < topY) {
+            topY = y;
+            current = h;
+          }
+        });
+        // 回退：阅读带内无标题时，取最后一个已滚过顶部的标题（仍在该章节内）
+        if (!current) {
+          for (const h of headingEls) {
+            if (h.getBoundingClientRect().top < HEADER_OFFSET) current = h;
+          }
+        }
+        document
+          .querySelectorAll('a.toc-link.toc-active')
+          .forEach((l) => l.classList.remove('toc-active'));
+        if (current) {
+          const links = linksByHref.get('#' + current.id);
+          if (links) links.forEach((l) => l.classList.add('toc-active'));
+        }
+      };
+
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
-            if (entry.isIntersecting) {
-              const link = map.get('#' + entry.target.id);
-              if (link) {
-                if (active && active !== link)
-                  active.classList.remove('toc-active');
-                link.classList.add('toc-active');
-                active = link;
-              }
-            }
+            if (entry.isIntersecting) visible.add(entry.target);
+            else visible.delete(entry.target);
           }
+          setActive();
         },
         { rootMargin: '-80px 0px -70% 0px', threshold: 0 }
       );
       headingEls.forEach((h) => observer.observe(h));
+      setActive();
     }
   </script>
 </BaseLayout>
