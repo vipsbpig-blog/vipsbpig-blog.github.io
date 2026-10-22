@@ -240,6 +240,81 @@
   .dark .prose hr {
     border-top-color: var(--color-line-dark);
   }
+
+  /* —— 表格：编辑式横线风格，无竖线 —— */
+  .prose table {
+    width: 100%;
+    margin-block: 2rem;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .prose thead {
+    border-bottom: 1px solid var(--color-ink);
+  }
+
+  .dark .prose thead {
+    border-bottom-color: var(--color-ink-dark);
+  }
+
+  .prose th {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: 0.01em;
+    color: var(--color-ink);
+    text-align: left;
+    padding: 0.35rem 0.75rem 0.4rem;
+    white-space: nowrap;
+  }
+
+  .dark .prose th {
+    color: var(--color-ink-dark);
+  }
+
+  .prose tbody tr {
+    border-bottom: 1px solid var(--color-line);
+    transition: background-color 0.15s ease;
+  }
+
+  .prose tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .prose tbody tr:hover {
+    background-color: color-mix(in srgb, var(--color-coral) 5%, transparent);
+  }
+
+  .dark .prose tbody tr {
+    border-bottom-color: var(--color-line-dark);
+  }
+
+  .dark .prose tbody tr:hover {
+    background-color: color-mix(in srgb, var(--color-coral-dark) 8%, transparent);
+  }
+
+  .prose td {
+    padding: 0.4rem 0.75rem;
+    color: var(--color-ink-soft);
+    vertical-align: top;
+  }
+
+  .dark .prose td {
+    color: var(--color-ink-soft-dark);
+  }
+
+  /* 首列轻微强调，帮助横向扫读 */
+  .prose td:first-child {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+
+  .dark .prose td:first-child {
+    color: var(--color-ink-dark);
+  }
 }
 
 /* ============ 目录 (TOC) ============ */

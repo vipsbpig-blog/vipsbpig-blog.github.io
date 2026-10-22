@@ -1,11 +1,11 @@
-export const SITE_TITLE = '站点标题';
-export const SITE_DESCRIPTION = '一个关于开发与日常的私人博客';
-export const AUTHOR = '你的名字';
-export const AUTHOR_TAGLINE = '写代码，也写字';
+export const SITE_TITLE = '黑猪的博客';
+export const SITE_DESCRIPTION = '黑猪的私人博客——记录生活、思考与看过的故事。';
+export const AUTHOR = '黑猪';
+export const AUTHOR_TAGLINE = '看剧，也想事儿';
 export const AUTHOR_BIO =
-  '一个开发者，记录写下的代码与走过的日子。这是我的私人博客——没有追踪器，没有广告，只有字与图。';
-export const AUTHOR_AVATAR = 'https://picsum.photos/seed/author-portrait/400/500';
-export const SITE_URL = 'https://username.github.io';
+  '一头在城市里打滚的黑猪，偶尔写字，记录看过的故事和想过的事。这是我的私人博客——没有追踪器，没有广告，只有字。';
+export const AUTHOR_AVATAR = 'https://picsum.photos/seed/black-pig-portrait/400/500';
+export const SITE_URL = 'https://vipsbpig-blog.github.io';
 
 // Twikoo 评论配置：部署在 Netlify 时，envId 即为部署地址
 export const TWIKOO_ENV_ID = 'https://twikoo-vipsbpig.netlify.app/';
@@ -30,7 +30,7 @@ export const CATEGORIES = [
   {
     slug: 'life',
     label: '生活',
-    description: '照片与短文，日子里的光与琐碎。',
+    description: '看过的剧、想过的事、日子里的杂感。',
     collection: 'photos' as const,
     color: 'var(--color-coral)',
   },
@@ -38,8 +38,7 @@ export const CATEGORIES = [
 
 // 精选文章：手工策划，type 对应集合，slug 对应文件名（无扩展名）
 export const FEATURED = [
-  { type: 'dev' as const, slug: 'blog-launch' },
-  { type: 'photo' as const, slug: 'weekend-coffee' },
+  { type: 'photo' as const, slug: 'cyberpunk-edgerunners-1-vs-2' },
 ] as const;
 
 // 文章卡片摘要：自动提取时的最大字符数（手填 summary 不受限）
